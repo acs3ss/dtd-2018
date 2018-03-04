@@ -34,8 +34,41 @@ def send_request_(text):
     print(response.read())
     return conn.close()
 
+def scrape_json(response):
+    response_json = json.loads(response)
+    response_list = []
+    for i in range(len(response_json["entities"])):
+
+        for j in range(len(response_json["entities"][i]["mentions"])):
+            entity_list = []
+            entity_list.append(response_json["entities"][i]["mentions"][j]["text"]["content"])
+            entity_list.append(response_json["entities"][i]["mentions"][j]["sentiment"]["magnitude"])
+            response_list.append(entity_list)
+    #       print(response_json["entities"][i]["mentions"][j]["text"]["content"])
+    #       print(response_json["entities"][i]["mentions"][j]["sentiment"]["magnitude"])
+    #        print(response_json["entities"][i]["mentions"][j]["sentiment"]["score"])
+    return response_list
+
+def replace_substrings(html, sublist):
+    for string in sublist:
+        if string[0] in str(html):
+            color = "0,0,255,"
+            intensity = str(string[1])[0:3]
+            front_div = '<div style="background-color: rgba(' + color + intensity +')">'
+            end_div = '</div>'
+            new_string = front_div + string[0] + end_div
+            html = html.replace(string[0], new_string)
+    return html
+
+def add_class(html):
+    html = html.replace("<body", '<style> .context :not(p) {background: #f1c40f; padding: 0;}</style>{<div class="context"><body', 1)
+    html = html.replace("</body>", "</body></div>")
+    return html
+
 
 if __name__ == "__main__":
   #  html = urllib.request.urlopen(sys.argv[1:]).read()
     html = urllib.request.urlopen('http://money.cnn.com/2018/03/03/news/economy/trump-tariffs-cars-trade-war-europe/index.html').read()
-    send_request(stripHTML(html))
+    response = send_request(stripHTML(html))
+    words = scrape_json(response)
+    replace_substrings(html, words)
