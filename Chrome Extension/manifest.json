@@ -1,0 +1,19 @@
+
+{
+"manifest_version": 2,
+"name": "Formget Latest Blogs",
+"description": "This extension displays the latest blog updates from FormGet.",
+"version": "1.0",
+"browser_action":
+{
+"default_icon": "icon.png",
+"default_popup": "popup.html",
+"default_title":"Formget Updates"
+},
+"content_scripts": [{
+    "css": ["styles.css"],
+    "js": ["content.js"],
+    "matches": ["https://www.cnn.com/2018/03/04/politics/trump-gridiron-dinner-remarks/index.html"]
+  }],
+"permissions": ["tabs", "https://google.com/"]
+}
