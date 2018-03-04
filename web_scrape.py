@@ -17,6 +17,15 @@ def stripHTML(body):
     visible_texts = filter(tag_visible, texts)
     return u" ".join(t.strip() for t in visible_texts)
 
+def send_request(text):
+    conn = http.client.HTTPConnection("localhost", 8080)
+    headers = {'Content-type': 'application/json'}
+    text_dict = {'text': text}
+    text_json = json.dumps(text_dict)
+    conn.request('POST', text_json, headers)
+    response = conn.getresponse()
+    return response.read()
+
 
 if __name__ == "__main__":
   #  html = urllib.request.urlopen(sys.argv[1:]).read()
